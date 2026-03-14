@@ -14,6 +14,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a password']
     },
+    bio: {
+        type: String,
+        default: ''
+    },
+    location: {
+        type: String,
+        default: ''
+    },
+    skillsOffered: {
+        type: [String],
+        default: []
+    },
+    skillsWanted: {
+        type: [String],
+        default: []
+    },
     createdAt: {
         type: Date,
         default: Date.now
