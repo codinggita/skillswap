@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 
+const skillSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    level: {
+        type: String,
+        enum: ['Beginner', 'Intermediate', 'Advanced'],
+        default: 'Beginner'
+    }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,6 +25,22 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please add a password']
+    },
+    bio: {
+        type: String,
+        default: ''
+    },
+    location: {
+        type: String,
+        default: ''
+    },
+    skillsOffered: {
+        type: [skillSchema],
+        default: []
+    },
+    skillsWanted: {
+        type: [skillSchema],
+        default: []
     },
     createdAt: {
         type: Date,
