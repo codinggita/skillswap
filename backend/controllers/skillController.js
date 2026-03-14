@@ -32,43 +32,75 @@ exports.createSkill = async (req, res) => {
     }
 };
 
-// GET /api/skills — Return all skills except the current user's
+// GET /api/skills — Return paginated skills excluding the current user's
 exports.getAllSkills = async (req, res) => {
     try {
         const user = await getUserFromHeader(req);
 
-        const skills = await Skill.find({ userId: { $ne: user._id } })
-            .populate('userId', 'name email location')
-            .sort({ createdAt: -1 });
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 9));
+        const skip = (page - 1) * limit;
 
-        res.status(200).json(skills);
+        const filter = { userId: { $ne: user._id } };
+
+        const [skills, totalSkills] = await Promise.all([
+            Skill.find(filter)
+                .populate('userId', 'name email location')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit),
+            Skill.countDocuments(filter)
+        ]);
+
+        res.status(200).json({
+            skills,
+            currentPage: page,
+            totalPages: Math.ceil(totalSkills / limit) || 1,
+            totalSkills
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 
-// GET /api/skills/search?query=react — Search skills by title, category, or description
+// GET /api/skills/search?query=react — Search skills with pagination
 exports.searchSkills = async (req, res) => {
     try {
         const user = await getUserFromHeader(req);
         const { query } = req.query;
 
-        if (!query) return res.status(200).json([]);
+        if (!query) return res.status(200).json({ skills: [], currentPage: 1, totalPages: 1, totalSkills: 0 });
+
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 9));
+        const skip = (page - 1) * limit;
 
         const regex = new RegExp(query, 'i');
 
-        const skills = await Skill.find({
+        const filter = {
             userId: { $ne: user._id },
             $or: [
                 { title: regex },
                 { category: regex },
                 { description: regex }
             ]
-        })
-            .populate('userId', 'name email location')
-            .sort({ createdAt: -1 });
+        };
 
-        res.status(200).json(skills);
+        const [skills, totalSkills] = await Promise.all([
+            Skill.find(filter)
+                .populate('userId', 'name email location')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit),
+            Skill.countDocuments(filter)
+        ]);
+
+        res.status(200).json({
+            skills,
+            currentPage: page,
+            totalPages: Math.ceil(totalSkills / limit) || 1,
+            totalSkills
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

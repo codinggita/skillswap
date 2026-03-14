@@ -7,6 +7,9 @@ import { ArrowLeft, LogOut, Compass, Loader2, AlertCircle, CheckCircle, X } from
 import SkillSearchBar from '../components/marketplace/SkillSearchBar';
 import SkillFilters from '../components/marketplace/SkillFilters';
 import MarketplaceSkillCard from '../components/marketplace/MarketplaceSkillCard';
+import Pagination from '../components/marketplace/Pagination';
+
+const LIMIT = 9;
 
 const Marketplace = () => {
     const { user, logout } = useAuth();
@@ -18,22 +21,33 @@ const Marketplace = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [toast, setToast] = useState(null);
 
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalSkills, setTotalSkills] = useState(0);
+
     const config = {
         headers: {
             'user-email': user?.email
         }
     };
 
-    // Fetch skills from API
-    const fetchSkills = useCallback(async (query = '') => {
+    // Fetch skills from API with pagination
+    const fetchSkills = useCallback(async (query = '', page = 1) => {
         try {
             setLoading(true);
             setError('');
-            const url = query
+            const baseUrl = query
                 ? `http://localhost:5000/api/skills/search?query=${encodeURIComponent(query)}`
                 : 'http://localhost:5000/api/skills';
+            const separator = query ? '&' : '?';
+            const url = `${baseUrl}${separator}page=${page}&limit=${LIMIT}`;
+
             const { data } = await axios.get(url, config);
-            setSkills(data);
+            setSkills(data.skills);
+            setCurrentPage(data.currentPage);
+            setTotalPages(data.totalPages);
+            setTotalSkills(data.totalSkills);
         } catch (err) {
             setError('Failed to load skills. Please try again.');
         } finally {
@@ -42,11 +56,28 @@ const Marketplace = () => {
     }, [user?.email]);
 
     useEffect(() => {
-        fetchSkills(searchQuery);
-    }, [searchQuery]);
+        fetchSkills(searchQuery, currentPage);
+    }, [searchQuery, currentPage]);
 
     const handleSearch = (query) => {
         setSearchQuery(query);
+        setCurrentPage(1); // Reset to page 1 on new search
+    };
+
+    const handleLevelChange = (level) => {
+        setSelectedLevel(level);
+        setCurrentPage(1);
+    };
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleRequest = async (skillId) => {
@@ -115,11 +146,18 @@ const Marketplace = () => {
 
             <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
                 {/* Page Header */}
-                <div>
-                    <h1 className="font-[Space_Grotesk] text-3xl font-bold text-white mb-2">
-                        Skill Marketplace
-                    </h1>
-                    <p className="text-slate-400">Discover skills from the community and send a request to learn.</p>
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+                    <div>
+                        <h1 className="font-[Space_Grotesk] text-3xl font-bold text-white mb-1">
+                            Skill Marketplace
+                        </h1>
+                        <p className="text-slate-400">Discover skills from the community and send a request to learn.</p>
+                    </div>
+                    {totalSkills > 0 && (
+                        <p className="text-sm text-slate-500 shrink-0">
+                            {totalSkills} skill{totalSkills !== 1 ? 's' : ''} available
+                        </p>
+                    )}
                 </div>
 
                 {/* Search + Filters */}
@@ -128,8 +166,8 @@ const Marketplace = () => {
                     <SkillFilters
                         selectedLevel={selectedLevel}
                         selectedCategory={selectedCategory}
-                        onLevelChange={setSelectedLevel}
-                        onCategoryChange={setSelectedCategory}
+                        onLevelChange={handleLevelChange}
+                        onCategoryChange={handleCategoryChange}
                     />
                 </div>
 
@@ -143,7 +181,7 @@ const Marketplace = () => {
                         <AlertCircle size={40} className="text-rose-400 mb-3" />
                         <p className="text-rose-400 mb-2">{error}</p>
                         <button
-                            onClick={() => fetchSkills(searchQuery)}
+                            onClick={() => fetchSkills(searchQuery, currentPage)}
                             className="text-sm text-emerald-400 hover:text-emerald-300 font-medium"
                         >
                             Try Again
@@ -158,21 +196,30 @@ const Marketplace = () => {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredSkills.map((skill) => (
-                            <MarketplaceSkillCard
-                                key={skill._id}
-                                skill={skill}
-                                onRequest={handleRequest}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredSkills.map((skill) => (
+                                <MarketplaceSkillCard
+                                    key={skill._id}
+                                    skill={skill}
+                                    onRequest={handleRequest}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Pagination */}
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
                 )}
             </main>
 
             {/* Toast */}
             {toast && (
-                <div className="fixed bottom-6 right-6 z-[200] flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-slate-900/95 px-5 py-3.5 shadow-2xl shadow-emerald-500/10 backdrop-blur-xl animate-slide-up">
+                <div className="fixed bottom-6 right-6 z-200 flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-slate-900/95 px-5 py-3.5 shadow-2xl shadow-emerald-500/10 backdrop-blur-xl animate-slide-up">
                     <CheckCircle size={18} className="text-emerald-400 shrink-0" />
                     <span className="text-sm font-medium text-slate-200">{toast.message}</span>
                     <button
