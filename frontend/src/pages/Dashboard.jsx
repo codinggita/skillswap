@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
     LogOut, User, Sun, Moon, Plus, Compass, Settings,
     BookOpen, Target, Send, Inbox, Edit2, Trash2
@@ -8,7 +9,7 @@ import {
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const { isDarkMode, toggleTheme } = useTheme();
     const [activeTab, setActiveTab] = useState('incoming');
 
     // Simple mock data for presentation
@@ -39,16 +40,6 @@ const Dashboard = () => {
         { id: 1, name: 'David Smith', skill: 'Python Data Science', status: 'Pending' },
     ];
 
-    // Theme toggle effect
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [isDarkMode]);
-
-    const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950' : 'bg-gray-50'}`}>

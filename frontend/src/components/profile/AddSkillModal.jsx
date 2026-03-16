@@ -15,66 +15,62 @@ const AddSkillModal = ({ title, onClose, onSubmit }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm px-4">
-            <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-white">{title}</h2>
-                    <button onClick={onClose} className="rounded-full p-1 text-slate-400 hover:bg-white/10 hover:text-white transition">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md">
+            <div className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 p-6 shadow-xl dark:shadow-emerald-500/10 transition-all">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h3>
+                    <button onClick={onClose} className="rounded-lg p-1 text-gray-400 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
                         <X size={20} />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    <input
-                        autoFocus
-                        type="text"
-                        value={skill}
-                        onChange={e => setSkill(e.target.value)}
-                        placeholder="e.g. React.js, Python, UI Design"
-                        className="w-full rounded-xl border border-white/10 bg-slate-800 p-3 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 mb-4 transition"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-gray-600 dark:text-slate-400">Skill Name</label>
+                        <input
+                            type="text"
+                            value={skill}
+                            onChange={(e) => setSkill(e.target.value)}
+                            placeholder="e.g. React, UI/UX Design"
+                            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-slate-800/50 p-3 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition"
+                        />
+                    </div>
 
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-slate-300 mb-2">Skill Level</label>
+                    <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-gray-600 dark:text-slate-400">Level</label>
                         <div className="flex gap-2">
-                            {levels.map((l) => (
+                            {['Beginner', 'Intermediate', 'Advanced'].map((lvl) => (
                                 <button
-                                    key={l}
-                                    type="button"
-                                    onClick={() => setLevel(l)}
-                                    className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium border transition-all duration-200 ${
-                                        level === l
-                                            ? l === 'Advanced'
-                                                ? 'bg-teal-500/20 text-teal-400 border-teal-500/40'
-                                                : l === 'Intermediate'
-                                                ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
-                                                : 'bg-slate-600/30 text-slate-300 border-slate-500/40'
-                                            : 'bg-slate-800/50 text-slate-400 border-white/10 hover:bg-slate-700/50'
+                                    key={lvl}
+                                    onClick={() => setLevel(lvl)}
+                                    className={`flex-1 rounded-lg border py-2 text-xs font-semibold transition-all duration-200 ${
+                                        level === lvl
+                                            ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-500/40 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+                                            : 'border-gray-200 dark:border-white/10 bg-white dark:bg-slate-800/50 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700/50'
                                     }`}
                                 >
-                                    {l}
+                                    {lvl}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3">
+                    <div className="flex gap-3 pt-6">
                         <button
-                            type="button"
                             onClick={onClose}
-                            className="rounded-xl px-5 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-800 transition"
+                            className="flex-1 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-800/50 py-3 text-sm font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 transition"
                         >
                             Cancel
                         </button>
                         <button
-                            type="submit"
+                            onClick={() => onSubmit(skill, level)}
                             disabled={!skill.trim()}
-                            className="rounded-xl bg-gradient-to-r from-emerald-400 to-sky-400 px-5 py-2.5 text-sm font-medium text-slate-950 shadow-sm transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-emerald-400 dark:to-sky-400 py-3 text-sm font-bold text-white dark:text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Save Skill
+                            Add Skill
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );
