@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getUserProfile,
+    getPublicProfile,
     updateUserProfile,
     addSkillOffered,
     addSkillWanted,
@@ -12,6 +13,7 @@ const {
 
 // Profile routing
 router.get('/me', getUserProfile);
+router.get('/:userId', getPublicProfile);
 router.put('/update', updateUserProfile);
 
 // Skills management

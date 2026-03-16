@@ -32,7 +32,7 @@ exports.createSkill = async (req, res) => {
     }
 };
 
-// GET /api/skills — Return paginated skills excluding the current user's
+// GET /api/skills — Return paginated skills excluding the current user's. Defaults to showing MATCHES.
 exports.getAllSkills = async (req, res) => {
     try {
         const user = await getUserFromHeader(req);
@@ -41,7 +41,26 @@ exports.getAllSkills = async (req, res) => {
         const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 9));
         const skip = (page - 1) * limit;
 
-        const filter = { userId: { $ne: user._id } };
+        // Extract wanted skill names, lowercase and trimmed
+        const wantedSkillNames = user.skillsWanted.map(s => s.name.trim().toLowerCase());
+
+        // If user wants nothing, they get 0 matches in the default view
+        if (wantedSkillNames.length === 0) {
+            return res.status(200).json({
+                skills: [],
+                currentPage: page,
+                totalPages: 1,
+                totalSkills: 0
+            });
+        }
+
+        // Build case-insensitive regex array for matching
+        const regexArray = wantedSkillNames.map(name => new RegExp(`^${name}$`, 'i'));
+
+        const filter = { 
+            userId: { $ne: user._id },
+            title: { $in: regexArray }
+        };
 
         const [skills, totalSkills] = await Promise.all([
             Skill.find(filter)
