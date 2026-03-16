@@ -9,6 +9,10 @@ const skillSchema = new mongoose.Schema({
         type: String,
         enum: ['Beginner', 'Intermediate', 'Advanced'],
         default: 'Beginner'
+    },
+    category: {
+        type: String,
+        default: 'General'
     }
 }, { _id: false });
 

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Skill = require('../models/Skill');
 
 // Helper to identify user without JWT
 // The frontend will pass the user email via a custom header 'user-email'
@@ -26,6 +27,19 @@ exports.getUserProfile = async (req, res) => {
     }
 };
 
+// GET /api/users/:userId -> Return a user's public profile.
+exports.getPublicProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId).select('-password -email');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ message: 'Invalid user ID or user not found' });
+    }
+};
+
 // PUT /api/users/update -> Update profile details such as name, bio, location.
 exports.updateUserProfile = async (req, res) => {
     try {
@@ -48,15 +62,22 @@ exports.updateUserProfile = async (req, res) => {
 exports.addSkillOffered = async (req, res) => {
     try {
         const user = await getUserFromHeader(req);
-        const { skill, level } = req.body;
+        const { skill, level, category } = req.body;
 
         if (!skill) return res.status(400).json({ message: 'Skill name is required' });
 
         // Check if skill already exists by name
         const exists = user.skillsOffered.some(s => s.name === skill);
         if (!exists) {
-            user.skillsOffered.push({ name: skill, level: level || 'Beginner' });
+            user.skillsOffered.push({ name: skill, level: level || 'Beginner', category: category || 'General' });
             await user.save();
+
+            // Sync to the Skill collection so it appears in the Marketplace
+            await Skill.findOneAndUpdate(
+                { userId: user._id, title: skill },
+                { title: skill, level: level || 'Beginner', category: category || 'General', description: '', userId: user._id },
+                { upsert: true, new: true }
+            );
         }
 
         user.password = undefined;
@@ -70,14 +91,14 @@ exports.addSkillOffered = async (req, res) => {
 exports.addSkillWanted = async (req, res) => {
     try {
         const user = await getUserFromHeader(req);
-        const { skill, level } = req.body;
+        const { skill, level, category } = req.body;
 
         if (!skill) return res.status(400).json({ message: 'Skill name is required' });
 
         // Check if skill already exists by name
         const exists = user.skillsWanted.some(s => s.name === skill);
         if (!exists) {
-            user.skillsWanted.push({ name: skill, level: level || 'Beginner' });
+            user.skillsWanted.push({ name: skill, level: level || 'Beginner', category: category || 'General' });
             await user.save();
         }
 
@@ -99,6 +120,9 @@ exports.removeSkill = async (req, res) => {
         user.skillsWanted = user.skillsWanted.filter(s => s.name !== skillName);
 
         await user.save();
+
+        // Remove from the Skill collection so it no longer appears in the Marketplace
+        await Skill.deleteMany({ userId: user._id, title: skillName });
 
         user.password = undefined;
         res.status(200).json(user);
