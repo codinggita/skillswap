@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -29,11 +29,11 @@ const Marketplace = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalSkills, setTotalSkills] = useState(0);
 
-    const config = {
+    const config = useMemo(() => ({
         headers: {
             'user-email': user?.email
         }
-    };
+    }), [user?.email]);
 
     // Fetch skills from API with pagination
     const fetchSkills = useCallback(async (query = '', page = 1) => {
@@ -41,8 +41,8 @@ const Marketplace = () => {
             setLoading(true);
             setError('');
             const baseUrl = query
-                ? `http://localhost:5000/api/skills/search?query=${encodeURIComponent(query)}`
-                : 'http://localhost:5000/api/skills';
+                ? `${import.meta.env.VITE_API_URL}/api/skills/search?query=${encodeURIComponent(query)}`
+                : `${import.meta.env.VITE_API_URL}/api/skills`;
             const separator = query ? '&' : '?';
             const url = `${baseUrl}${separator}page=${page}&limit=${LIMIT}`;
 
@@ -51,7 +51,7 @@ const Marketplace = () => {
             setCurrentPage(data.currentPage);
             setTotalPages(data.totalPages);
             setTotalSkills(data.totalSkills);
-        } catch (err) {
+        } catch {
             setError('Failed to load skills. Please try again.');
         } finally {
             setLoading(false);
@@ -61,14 +61,14 @@ const Marketplace = () => {
     // Fetch current user's offered skills once
     useEffect(() => {
         if (!user?.email) return;
-        axios.get('http://localhost:5000/api/users/me', config)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, config)
             .then(({ data }) => setMySkills(data.skillsOffered || []))
-            .catch(() => {});
+            .catch(() => { });
     }, [user?.email]);
 
     useEffect(() => {
         fetchSkills(searchQuery, currentPage);
-    }, [searchQuery, currentPage]);
+    }, [searchQuery, currentPage, fetchSkills]);
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -93,7 +93,7 @@ const Marketplace = () => {
 
     const handleRequest = async (skillId, offeredSkill) => {
         const { data } = await axios.post(
-            'http://localhost:5000/api/requests',
+            `${import.meta.env.VITE_API_URL}/api/requests`,
             { skillId, offeredSkill },
             config
         );
@@ -209,8 +209,8 @@ const Marketplace = () => {
                         <Compass size={40} className="text-gray-400 dark:text-slate-600 mb-3" />
                         <p className="text-gray-600 dark:text-slate-400 mb-1 font-medium text-lg">No matched skills found</p>
                         <p className="text-sm text-gray-500 dark:text-slate-500 text-center max-w-md">
-                            {searchQuery 
-                                ? 'Try a different search term or clear filters.' 
+                            {searchQuery
+                                ? 'Try a different search term or clear filters.'
                                 : 'We couldn\'t find any users currently offering the skills you want to learn. Try adding more skills to your Profile or use the search bar above to look around!'}
                         </p>
                     </div>

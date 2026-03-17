@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 
-const levels = ['Beginner', 'Intermediate', 'Advanced'];
+
 const categories = [
     'Web Development',
     'Mobile Development',
@@ -16,13 +16,6 @@ const AddSkillModal = ({ title, onClose, onSubmit }) => {
     const [skill, setSkill] = useState('');
     const [level, setLevel] = useState('Beginner');
     const [category, setCategory] = useState('General');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (skill.trim()) {
-            onSubmit(skill.trim(), level, category);
-        }
-    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md">

@@ -25,10 +25,10 @@ const Dashboard = () => {
                 const config = { headers: { 'user-email': user.email } };
                 // Fetch both profile and requests concurrently
                 const [profileRes, requestsRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/users/me', config),
-                    axios.get('http://localhost:5000/api/requests', config)
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, config),
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/requests`, config)
                 ]);
-                
+
                 setFullProfile(profileRes.data);
                 setIncomingRequests(requestsRes.data.incomingRequests || []);
                 setOutgoingRequests(requestsRes.data.outgoingRequests || []);
@@ -230,7 +230,7 @@ const Dashboard = () => {
                                             </div>
                                             <span className={`text-xs font-medium px-2 py-1 rounded-md ${req.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
                                                 : req.status === 'rejected' ? 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
-                                                : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                                    : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                                                 }`}>
                                                 {req.status ? req.status.charAt(0).toUpperCase() + req.status.slice(1) : ''}
                                             </span>
@@ -245,7 +245,7 @@ const Dashboard = () => {
                                             </div>
                                             <span className={`text-xs font-medium px-2 py-1 rounded-md ${req.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
                                                 : req.status === 'rejected' ? 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
-                                                : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                                    : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                                                 }`}>
                                                 {req.status ? req.status.charAt(0).toUpperCase() + req.status.slice(1) : ''}
                                             </span>

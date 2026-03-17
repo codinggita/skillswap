@@ -20,19 +20,15 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [toast, setToast] = useState(null);
 
-    const config = {
-        headers: {
-            'user-email': user?.email
-        }
-    };
+
 
     const fetchProfile = async () => {
         try {
             setLoading(true);
-            const { data } = await axios.get('http://localhost:5000/api/users/me', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, { headers: { 'user-email': user?.email } });
             setProfile(data);
             setError('');
-        } catch (err) {
+        } catch {
             setError('Failed to load profile. Please try again.');
         } finally {
             setLoading(false);
@@ -47,32 +43,32 @@ const Profile = () => {
 
     const handleUpdateProfile = async (formData) => {
         try {
-            const { data } = await axios.put('http://localhost:5000/api/users/update', formData, config);
+            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/users/update`, formData, { headers: { 'user-email': user?.email } });
             setProfile(data);
             setIsEditing(false);
 
             if (data.name !== user.name) {
                 login({ ...user, name: data.name });
             }
-        } catch (err) {
+        } catch {
             alert('Failed to update profile.');
         }
     };
 
     const handleAddSkillOffered = async (skill, level, category) => {
         try {
-            const { data } = await axios.put('http://localhost:5000/api/users/add-skill-offered', { skill, level, category }, config);
+            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/users/add-skill-offered`, { skill, level, category }, { headers: { 'user-email': user?.email } });
             setProfile(data);
-        } catch (err) {
+        } catch {
             alert('Failed to add skill.');
         }
     };
 
     const handleAddSkillWanted = async (skill, level, category) => {
         try {
-            const { data } = await axios.put('http://localhost:5000/api/users/add-skill-wanted', { skill, level, category }, config);
+            const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/api/users/add-skill-wanted`, { skill, level, category }, { headers: { 'user-email': user?.email } });
             setProfile(data);
-        } catch (err) {
+        } catch {
             alert('Failed to add skill.');
         }
     };
@@ -83,10 +79,10 @@ const Profile = () => {
 
     const handleRemoveSkill = async (skillName) => {
         try {
-            const { data } = await axios.delete(`http://localhost:5000/api/users/remove-skill/${encodeURIComponent(skillName)}`, config);
+            const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/remove-skill/${encodeURIComponent(skillName)}`, { headers: { 'user-email': user?.email } });
             setProfile(data);
             showToast('Skill removed successfully');
-        } catch (err) {
+        } catch {
             alert('Failed to remove skill.');
         }
     };
