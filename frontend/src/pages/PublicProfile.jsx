@@ -106,7 +106,12 @@ const PublicProfile = () => {
                                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
                             <div className="flex items-center gap-3 border-l border-gray-200 dark:border-white/10 pl-4">
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
+                                <Link 
+                                    to="/profile" 
+                                    className="flex items-center hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md px-2 py-1"
+                                >
+                                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
+                                </Link>
                             </div>
                         </div>
                     </div>

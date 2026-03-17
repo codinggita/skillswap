@@ -78,13 +78,19 @@ const Dashboard = () => {
                                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
                             <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-white/10">
-                                <div className="hidden md:flex flex-col items-end">
-                                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</span>
-                                </div>
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 to-sky-400 text-white shadow-sm">
-                                    <User size={18} />
-                                </div>
+                                <Link 
+                                    to="/profile"
+                                    className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 rounded-lg p-1"
+                                    aria-label="Profile"
+                                >
+                                    <div className="hidden md:flex flex-col items-end">
+                                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</span>
+                                    </div>
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 to-sky-400 text-white shadow-sm">
+                                        <User size={18} />
+                                    </div>
+                                </Link>
                                 <button
                                     onClick={logout}
                                     className="ml-2 rounded-lg p-2 text-gray-500 hover:bg-rose-50 hover:text-rose-600 dark:text-gray-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 transition-colors"
