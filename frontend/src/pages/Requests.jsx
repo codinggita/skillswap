@@ -21,11 +21,7 @@ const Requests = () => {
     const [updatingId, setUpdatingId] = useState(null);
     const [toast, setToast] = useState(null);
 
-    const config = {
-        headers: {
-            'user-email': user?.email
-        }
-    };
+
 
     const showToast = (message, type = 'success') => {
         setToast({ message, type });
@@ -39,10 +35,10 @@ const Requests = () => {
             setLoading(true);
             setError('');
 
-            const { data } = await axios.get('http://localhost:5000/api/requests', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/requests`, { headers: { 'user-email': user?.email } });
             setIncomingRequests(data?.incomingRequests || []);
             setOutgoingRequests(data?.outgoingRequests || []);
-        } catch (err) {
+        } catch {
             setError('Failed to load requests. Please try again.');
         } finally {
             setLoading(false);
@@ -58,9 +54,9 @@ const Requests = () => {
             setUpdatingId(requestId);
 
             const { data } = await axios.put(
-                `http://localhost:5000/api/requests/${requestId}`,
+                `${import.meta.env.VITE_API_URL}/api/requests/${requestId}`,
                 { status },
-                config
+                { headers: { 'user-email': user?.email } }
             );
 
             setIncomingRequests((prev) =>
@@ -187,11 +183,10 @@ const Requests = () => {
             </main>
 
             {toast && (
-                <div className={`fixed bottom-6 right-6 z-200 flex items-center gap-3 rounded-xl border px-5 py-3.5 shadow-2xl backdrop-blur-xl animate-slide-up ${
-                    toast.type === 'error'
+                <div className={`fixed bottom-6 right-6 z-200 flex items-center gap-3 rounded-xl border px-5 py-3.5 shadow-2xl backdrop-blur-xl animate-slide-up ${toast.type === 'error'
                         ? 'border-rose-500/20 bg-white dark:bg-slate-900/95'
                         : 'border-emerald-500/20 bg-white dark:bg-slate-900/95'
-                }`}>
+                    }`}>
                     <CheckCircle
                         size={18}
                         className={`shrink-0 ${toast.type === 'error' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}

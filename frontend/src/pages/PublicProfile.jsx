@@ -11,7 +11,7 @@ const PublicProfile = () => {
     const { userId } = useParams();
     const { user } = useAuth();
     const { isDarkMode, toggleTheme } = useTheme();
-    
+
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -20,20 +20,15 @@ const PublicProfile = () => {
     const [modalSkill, setModalSkill] = useState(null);
     const [toast, setToast] = useState(null);
 
-    const config = {
-        headers: {
-            'user-email': user?.email
-        }
-    };
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 setLoading(true);
-                const { data } = await axios.get(`http://localhost:5000/api/users/${userId}`, config);
+                const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, { headers: { 'user-email': user?.email } });
                 setProfile(data);
                 setError('');
-            } catch (err) {
+            } catch {
                 setError('Failed to load user profile. They might not exist.');
             } finally {
                 setLoading(false);
@@ -43,26 +38,26 @@ const PublicProfile = () => {
         if (userId) {
             fetchProfile();
         }
-    }, [userId]);
+    }, [userId, user?.email]);
 
     // Fetch marketplace Skill docs for this profile user (to get proper _id)
     useEffect(() => {
         if (!userId) return;
-        axios.get(`http://localhost:5000/api/skills?userId=${userId}&limit=50`, config)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/skills?userId=${userId}&limit=50`, { headers: { 'user-email': user?.email } })
             .then(({ data }) => setMarketplaceSkills(data.skills || []))
-            .catch(() => {});
-    }, [userId]);
+            .catch(() => { });
+    }, [userId, user?.email]);
 
     // Fetch current user's offered skills for the exchange modal
     useEffect(() => {
         if (!user?.email) return;
-        axios.get('http://localhost:5000/api/users/me', config)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, { headers: { 'user-email': user?.email } })
             .then(({ data }) => setMySkills(data.skillsOffered || []))
-            .catch(() => {});
+            .catch(() => { });
     }, [user?.email]);
 
     const handleRequest = async (skillId, offeredSkill) => {
-        await axios.post('http://localhost:5000/api/requests', { skillId, offeredSkill }, config);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/requests`, { skillId, offeredSkill }, { headers: { 'user-email': user?.email } });
         setToast('Request sent successfully!');
         setTimeout(() => setToast(null), 3000);
     };
@@ -122,7 +117,7 @@ const PublicProfile = () => {
                 {/* Header Profile Info */}
                 <div className="rounded-2xl border border-gray-200/50 bg-white/40 p-8 shadow-sm backdrop-blur-xl dark:border-white/5 dark:bg-slate-900/40">
                     <div className="flex flex-col sm:flex-row items-start gap-6">
-                        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/20">
+                        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-linear-to-tr from-emerald-500 to-sky-500 text-white shadow-lg shadow-emerald-500/20">
                             <UserIcon size={40} strokeWidth={2} />
                         </div>
                         <div className="flex-1">
@@ -227,7 +222,7 @@ const PublicProfile = () => {
 
             {/* Toast */}
             {toast && (
-                <div className="fixed bottom-6 right-6 z-[200] flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-white dark:bg-slate-900/95 px-5 py-3.5 shadow-2xl backdrop-blur-xl animate-fade-in">
+                <div className="fixed bottom-6 right-6 z-200 flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-white dark:bg-slate-900/95 px-5 py-3.5 shadow-2xl backdrop-blur-xl animate-fade-in">
                     <CheckCircle size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                     <span className="text-sm font-medium text-gray-900 dark:text-slate-200">{toast}</span>
                     <button

@@ -30,7 +30,7 @@ const ExchangeRequestModal = ({ skill, mySkills = [], onClose, onSubmit }) => {
     return (
         // Backdrop
         <div
-            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+            className="fixed inset-0 z-300 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
             onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
         >
             <div className="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-900 animate-fade-in">
@@ -129,7 +129,7 @@ const ExchangeRequestModal = ({ skill, mySkills = [], onClose, onSubmit }) => {
                     <button
                         onClick={handleSubmit}
                         disabled={!selectedSkill || submitting || !hasMySkills}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-400 dark:to-sky-400 dark:text-slate-950"
+                        className="flex items-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-400 dark:to-sky-400 dark:text-slate-950"
                     >
                         <Send size={14} />
                         {submitting ? 'Sending…' : 'Send Request'}
