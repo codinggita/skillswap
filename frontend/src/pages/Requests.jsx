@@ -108,7 +108,12 @@ const Requests = () => {
                                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
                             <div className="flex items-center gap-3 border-l border-gray-200 pl-4 dark:border-white/10">
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
+                                <Link 
+                                    to="/profile" 
+                                    className="flex items-center hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md px-2 py-1"
+                                >
+                                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>
+                                </Link>
                                 <button
                                     onClick={logout}
                                     className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
