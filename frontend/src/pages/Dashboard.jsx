@@ -7,6 +7,7 @@ import {
     BookOpen, Target, Send, Inbox
 } from 'lucide-react';
 import axios from 'axios';
+import { Helmet } from "react-helmet";
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -54,6 +55,10 @@ const Dashboard = () => {
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950' : 'bg-gray-50'}`}>
+            <Helmet>
+                <title>Dashboard - SkillSwap</title>
+                <meta name="description" content="Your SkillSwap dashboard" />
+            </Helmet>
             {/* Background Effects */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.1),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(52,211,153,0.1),transparent_40%)]" />

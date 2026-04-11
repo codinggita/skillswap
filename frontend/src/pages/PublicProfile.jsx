@@ -6,6 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ArrowLeft, MapPin, User as UserIcon, Sun, Moon, Briefcase, GraduationCap, CheckCircle, X } from 'lucide-react';
 import SkillCard from '../components/profile/SkillCard';
 import ExchangeRequestModal from '../components/marketplace/ExchangeRequestModal';
+import { Helmet } from "react-helmet";
 
 const PublicProfile = () => {
     const { userId } = useParams();
@@ -81,6 +82,10 @@ const PublicProfile = () => {
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-gray-50 text-gray-900'} font-sans selection:bg-emerald-500/30 pb-20`}>
+            <Helmet>
+                <title>{profile.name}'s Profile - SkillSwap</title>
+                <meta name="description" content={`View ${profile.name}'s profile on SkillSwap. See their offered and wanted skills, and request an exchange!`} />
+            </Helmet>
             {/* Background Effects */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.1),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(52,211,153,0.1),transparent_40%)]" />
@@ -106,8 +111,8 @@ const PublicProfile = () => {
                                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
                             <div className="flex items-center gap-3 border-l border-gray-200 dark:border-white/10 pl-4">
-                                <Link 
-                                    to="/profile" 
+                                <Link
+                                    to="/profile"
                                     className="flex items-center hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md px-2 py-1"
                                 >
                                     <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>

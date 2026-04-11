@@ -11,6 +11,8 @@ import SkillsOffered from '../components/profile/SkillsOffered';
 import SkillsWanted from '../components/profile/SkillsWanted';
 import Toast from '../components/profile/Toast';
 
+import { Helmet } from "react-helmet";
+
 const Profile = () => {
     const { user, login, logout } = useAuth();
     const { isDarkMode, toggleTheme } = useTheme();
@@ -106,6 +108,10 @@ const Profile = () => {
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-gray-50 text-gray-900'} font-sans selection:bg-emerald-500/30 pb-20`}>
+            <Helmet>
+                <title>Profile - SkillSwap</title>
+                <meta name="description" content="Manage your SkillSwap profile" />
+            </Helmet>
             {/* Background Effects matching Dashboard */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.1),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(52,211,153,0.1),transparent_40%)]" />
@@ -134,8 +140,8 @@ const Profile = () => {
                                 SWP
                             </span>
                             <div className="flex items-center gap-3 border-l border-gray-200 dark:border-white/10 pl-4">
-                                <Link 
-                                    to="/profile" 
+                                <Link
+                                    to="/profile"
                                     className="flex items-center hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md px-2 py-1"
                                 >
                                     <span className="text-sm font-semibold text-gray-900 dark:text-white">{user?.name || 'User'}</span>

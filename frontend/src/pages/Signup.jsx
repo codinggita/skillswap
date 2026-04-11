@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Helmet } from "react-helmet";
 
 const initialFormData = {
   name: '',
@@ -99,6 +100,10 @@ function Signup() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-10 sm:px-6 lg:px-8  flex items-center justify-center">
+      <Helmet>
+        <title>Signup - SkillSwap</title>
+        <meta name="description" content="Create a new SkillSwap account" />
+      </Helmet>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.26),transparent_45%),radial-gradient(circle_at_bottom_left,rgba(251,191,36,0.18),transparent_45%)]" />
       <div className="pointer-events-none absolute -left-10 top-24 h-40 w-40 rounded-full bg-emerald-400/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-4 bottom-20 h-52 w-52 rounded-full bg-sky-400/20 blur-3xl" />
