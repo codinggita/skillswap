@@ -8,6 +8,7 @@ import { useTheme } from '../context/ThemeContext';
 import RequestsTabs from '../components/RequestsTabs';
 import IncomingRequestCard from '../components/IncomingRequestCard';
 import OutgoingRequestCard from '../components/OutgoingRequestCard';
+import { Helmet } from "react-helmet";
 
 const Requests = () => {
     const { user, logout } = useAuth();
@@ -80,6 +81,10 @@ const Requests = () => {
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-gray-50 text-gray-900'} font-sans selection:bg-emerald-500/30 pb-20`}>
+            <Helmet>
+                <title>Requests - SkillSwap</title>
+                <meta name="description" content="Manage your SkillSwap requests" />
+            </Helmet>
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.1),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(52,211,153,0.1),transparent_40%)]" />
                 <div className="absolute -left-10 top-20 h-72 w-72 rounded-full bg-emerald-500/10 blur-[100px] dark:bg-emerald-500/20" />

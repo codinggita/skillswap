@@ -10,6 +10,8 @@ import SkillFilters from '../components/marketplace/SkillFilters';
 import MarketplaceSkillCard from '../components/marketplace/MarketplaceSkillCard';
 import Pagination from '../components/marketplace/Pagination';
 
+import { Helmet } from "react-helmet";
+
 const LIMIT = 9;
 
 const Marketplace = () => {
@@ -115,6 +117,11 @@ const Marketplace = () => {
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-200' : 'bg-gray-50 text-gray-900'} font-sans selection:bg-emerald-500/30 pb-20`}>
+            <Helmet>
+                <title>Marketplace - SkillSwap</title>
+                <meta name="description" content="Browse available skills on SkillSwap" />
+            </Helmet>
+
             {/* Background Effects */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.1),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(52,211,153,0.1),transparent_40%)]" />

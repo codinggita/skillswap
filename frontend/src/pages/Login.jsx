@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Helmet } from "react-helmet";
 
 const initialFormData = {
   email: '',
@@ -90,6 +91,11 @@ function Login() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-10 sm:px-6 lg:px-8 flex items-center justify-center">
+      <Helmet>
+        <title>Login - SkillSwap</title>
+        <meta name="description" content="Log in to your SkillSwap account" />
+      </Helmet>
+      
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(45,212,191,0.2),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.25),transparent_50%)]" />
       <div className="pointer-events-none absolute left-0 top-0 h-60 w-60 -translate-x-1/3 -translate-y-1/3 rounded-full bg-sky-500/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-64 w-64 translate-x-1/4 translate-y-1/4 rounded-full bg-emerald-500/20 blur-3xl" />
